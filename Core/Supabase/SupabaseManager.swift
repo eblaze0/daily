@@ -1,5 +1,7 @@
 import Foundation
 import Combine
+import Supabase
+import Auth
 
 // Note: We'll implement the actual Supabase SDK integration later
 // This is a placeholder for now
@@ -8,43 +10,79 @@ class SupabaseManager: ObservableObject {
     static let shared = SupabaseManager()
     
     // MARK: - Properties
-    private let supabaseURL = "YOUR_SUPABASE_URL"
-    private let supabaseKey = "YOUR_SUPABASE_ANON_KEY"
+    private let supabaseURL = "https://bzqreuxxrtjpvgmzouro.supabase.co"
+    private let supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ6cXJldXh4cnRqcHZnbXpvdXJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc2MTMxNDEsImV4cCI6MjA2MzE4OTE0MX0.OToC5ZfzZI8rRdlsjVAQdlhmCa4zCO9m-d5akN91RFo"
+    
+    // Supabase client
+    lazy var client = SupabaseClient(
+        supabaseURL: URL(string: supabaseURL)!,
+        supabaseKey: supabaseKey
+    )
     
     @Published var session: Session?
     @Published var isAuthenticated = false
     
     // MARK: - Initialization
     private init() {
-        // We'll implement auth listener setup here
-        // For now, this is a placeholder
+        setupAuthStateListener()
+    }
+    
+    private func setupAuthStateListener() {
+        Task {
+            for await authStateChange in client.auth.authStateChanges {
+                await MainActor.run {
+                    if case .signedIn = authStateChange.event {
+                        self.session = Session(
+                            id: authStateChange.session?.id ?? "",
+                            userId: authStateChange.session?.user.id.uuidString ?? "",
+                            email: authStateChange.session?.user.email ?? ""
+                        )
+                        self.isAuthenticated = true
+                        print("User authenticated: \(String(describing: self.session?.email))")
+                    } else if case .signedOut = authStateChange.event {
+                        self.session = nil
+                        self.isAuthenticated = false
+                        print("User signed out")
+                    }
+                }
+            }
+        }
     }
     
     // MARK: - Auth Methods
     func signUp(email: String, password: String) async throws {
-        // Will be implemented with Supabase SDK
-        print("Sign up with \(email)")
+        let authResponse = try await client.auth.signUp(
+            email: email,
+            password: password
+        )
+        
+        // In Supabase, sometimes users are instantly confirmed based on settings
+        // otherwise they'll need to confirm their email
+        if authResponse.user != nil && authResponse.session != nil {
+            await MainActor.run {
+                self.session = Session(
+                    id: authResponse.session?.id ?? "",
+                    userId: authResponse.user?.id.uuidString ?? "",
+                    email: authResponse.user?.email ?? ""
+                )
+                self.isAuthenticated = true
+            }
+        }
     }
     
     func signIn(email: String, password: String) async throws {
-        // Will be implemented with Supabase SDK
-        print("Sign in with \(email)")
+        let authResponse = try await client.auth.signIn(
+            email: email,
+            password: password
+        )
         
-        // For development testing
-        DispatchQueue.main.async {
-            self.isAuthenticated = true
-            self.session = Session(id: UUID().uuidString, userId: UUID().uuidString, email: email)
-        }
+        // Session is handled by the auth state listener
+        print("Signed in user: \(String(describing: authResponse.user?.email))")
     }
     
     func signOut() async throws {
-        // Will be implemented with Supabase SDK
-        print("Sign out")
-        
-        DispatchQueue.main.async {
-            self.isAuthenticated = false
-            self.session = nil
-        }
+        try await client.auth.signOut()
+        // Session clearing is handled by the auth state listener
     }
 }
 

@@ -14,15 +14,21 @@ let package = Package(
             targets: ["DailyFitnessApp"]),
     ],
     dependencies: [
-        // Dependencies go here
-        // We'll add Supabase SDK later
+        // Supabase Swift SDK
+        .package(url: "https://github.com/supabase-community/supabase-swift.git", from: "0.3.0"),
     ],
     targets: [
         .target(
             name: "DailyFitnessApp",
-            dependencies: [],
+            dependencies: [
+                .product(name: "Supabase", package: "supabase-swift"),
+                .product(name: "Auth", package: "supabase-swift"),
+                .product(name: "Storage", package: "supabase-swift"),
+                .product(name: "Functions", package: "supabase-swift"),
+                .product(name: "Realtime", package: "supabase-swift")
+            ],
             path: ".",
-            exclude: ["README.md", "Package.swift"]
+            exclude: ["README.md", "Package.swift", "supabase_schema.sql"]
         ),
         .testTarget(
             name: "DailyFitnessAppTests",
