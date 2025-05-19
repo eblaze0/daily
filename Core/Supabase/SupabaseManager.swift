@@ -10,8 +10,8 @@ class SupabaseManager: ObservableObject {
     static let shared = SupabaseManager()
     
     // MARK: - Properties
-    private let supabaseURL = "https://bzqreuxxrtjpvgmzouro.supabase.co"
-    private let supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ6cXJldXh4cnRqcHZnbXpvdXJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc2MTMxNDEsImV4cCI6MjA2MzE4OTE0MX0.OToC5ZfzZI8rRdlsjVAQdlhmCa4zCO9m-d5akN91RFo"
+    private let supabaseURL = SupabaseConfig.supabaseURL
+    private let supabaseKey = SupabaseConfig.supabaseKey
     
     // Supabase client
     lazy var client = SupabaseClient(

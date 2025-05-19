@@ -91,3 +91,8 @@ iOSInjectionProject/
 
 # macOS
 .DS_Store 
+
+# Sensitive Information
+SupabaseConfig.swift
+Config/
+.env 

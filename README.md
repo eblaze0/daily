@@ -33,7 +33,23 @@ A modern iOS fitness tracking application built with SwiftUI, focused on detaile
 1. Clone the repository
 2. Open the project in Xcode
 3. Install dependencies (if using CocoaPods or Swift Package Manager)
-4. Build and run
+4. Set up Supabase credentials (see Supabase Configuration below)
+5. Build and run
+
+### Supabase Configuration
+For security reasons, Supabase credentials are not included in the repository. To configure your app:
+
+1. Copy the template file `Core/Supabase/SupabaseConfig.template.swift` to `Core/Supabase/SupabaseConfig.swift`
+2. Edit `SupabaseConfig.swift` and replace the placeholder values with your actual Supabase URL and anonymous key:
+```swift
+enum SupabaseConfig {
+    static let supabaseURL = "YOUR_SUPABASE_URL"
+    static let supabaseKey = "YOUR_SUPABASE_ANON_KEY"
+}
+```
+3. Ensure that `SupabaseConfig.swift` is not committed to your repository (it's included in .gitignore)
+
+> **Security Note**: Never commit your Supabase credentials directly to a public repository. For production applications, consider using more secure methods for storing secrets.
 
 ## Architecture
 The app follows MVVM (Model-View-ViewModel) architecture with a Repository pattern for data operations.

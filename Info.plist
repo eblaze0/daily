@@ -46,10 +46,5 @@
     </array>
     <key>UIApplicationSupportsIndirectInputEvents</key>
     <true/>
-    <!-- Supabase Configuration -->
-    <key>SUPABASE_URL</key>
-    <string>https://bzqreuxxrtjpvgmzouro.supabase.co</string>
-    <key>SUPABASE_ANON_KEY</key>
-    <string>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ6cXJldXh4cnRqcHZnbXpvdXJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc2MTMxNDEsImV4cCI6MjA2MzE4OTE0MX0.OToC5ZfzZI8rRdlsjVAQdlhmCa4zCO9m-d5akN91RFo</string>
 </dict>
 </plist> 
